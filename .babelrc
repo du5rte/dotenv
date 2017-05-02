@@ -1,0 +1,11 @@
+{
+  "presets": [
+    "es2015-node5",
+    "stage-3"
+  ],
+  "plugins": [
+    "transform-object-rest-spread",
+    "transform-object-entries",
+    "add-module-exports"
+  ]
+}

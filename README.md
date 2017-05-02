@@ -16,101 +16,77 @@ npm install dotenv --save
 ```
 
 ## Usage
+Create a `.env` file in the root directory of your project.
+It supports 3 types of `.env` files `.env.json` and `.env.js`
 
-As early as possible in your application, require and configure dotenv.
-
-```javascript
-require('dotenv').config()
+`.env` supports entries in the form of `NAME=VALUE`.
+```sh
+NODE_ENV=development
+PORT=3000
+SECRET=my_super_secret
 ```
 
-Create a `.env` file in the root directory of your project. Add
-environment-specific variables on new lines in the form of `NAME=VALUE`.
-For example:
-
-```dosini
-DB_HOST=localhost
-DB_USER=root
-DB_PASS=s1mpl3
+`.env.json` supports JSON
+```json
+{
+  "NODE_ENV": "development",
+  "PORT": 3000,
+  "SECRET": "my_super_secret"
+}
 ```
 
-That's it.
+`.env.js` supports JavaScript
+```js
+module.exports = {
+  NODE_ENV: "development",
+  PORT: 3000,
+  SECRET: "my_super_secret"
+}
+```
 
-`process.env` now has the keys and values you defined in your `.env` file.
+
+
+That's it. As early as possible in your application, require dotenv. `process.env` should have the keys and values you defined in your `.env` file.
+
 
 ```javascript
-var db = require('db')
-db.connect({
-  host: process.env.DB_HOST,
-  username: process.env.DB_USER,
-  password: process.env.DB_PASS
+// setups entries in process.env
+require('dotenv')
+
+...
+
+// which can be access anywhere in your code
+app.listen(process.env.PORT, function () {
+  console.log('Server running on localhost:' + process.env.PORT)
 })
 ```
 
-### Preload
+In ES6
+```javascript
+// setups entries in process.env
+import 'dotenv'
+// bind process.env to exports
+import { PORT } from 'dotenv'
 
-If you are using iojs-v1.6.0 or later, you can use the `--require` (`-r`) command line option to preload dotenv. By doing this, you do not need to require and load dotenv in your application code.
+...
 
-
-```bash
-$ node -r dotenv/config your_script.js
+app.listen(PORT, () => {
+  console.log(`Server running on localhost:${PORT}`)
+});
 ```
 
-The configuration options below are supported as command line arguments in the format `dotenv_config_<option>=value`
-
-```bash
-$ node -r dotenv/config your_script.js dotenv_config_path=/custom/path/to/your/env/vars
+## Location
+`dotenv` should be place in the root of the project but it searches for `.env` files the same way node searches for `node_modules` folders, the closer to the root the higher the priority.
 ```
-
-## Config
-
-_Alias: `load`_
-
-`config` will read your .env file, parse the contents, assign it to
-[`process.env`](https://nodejs.org/docs/latest/api/process.html#process_process_env),
-and return an Object with a _parsed_ key containing the loaded content or an _error_ key if it failed.  
-You can additionally, pass options to `config`.
-
-### Options
-
-#### Path
-
-Default: `.env`
-
-You can specify a custom path if your file containing environment variables is
-named or located differently.
-
-```js
-require('dotenv').config({path: '/custom/path/to/your/env/vars'})
-```
-
-#### Encoding
-
-Default: `utf8`
-
-You may specify the encoding of your file containing environment variables
-using this option.
-
-```js
-require('dotenv').config({encoding: 'base64'})
-```
-
-## Parse
-
-The engine which parses the contents of your file containing environment
-variables is available to use. It accepts a String or Buffer and will return
-an Object with the parsed keys and values.
-
-```js
-var dotenv = require('dotenv')
-var buf = new Buffer('BASIC=basic')
-var config = dotenv.parse(buf) // will return an object
-console.log(typeof config, config) // object { BASIC : 'basic' }
+/Users/myUser/myProjects/myAwesomeProject/.env
+/Users/myUser/myProjects/.env
+/Users/myUser/.env
+/Users/.env
 ```
 
 ### Rules
 
 The parsing engine currently supports the following rules:
-
 - `BASIC=basic` becomes `{BASIC: 'basic'}`
 - empty lines are skipped
 - lines beginning with `#` are treated as comments
@@ -140,40 +116,6 @@ No. We **strongly** recommend against having a "main" `.env` file and an "enviro
 > In a twelve-factor app, env vars are granular controls, each fully orthogonal to other env vars. They are never grouped together as “environments”, but instead are independently managed for each deploy. This is a model that scales up smoothly as the app naturally expands into more deploys over its lifetime.
 >
 > – [The Twelve-Factor App](http://12factor.net/config)
-
-### What happens to environment variables that were already set?
-
-We will never modify any environment variables that have already been set. In particular, if there is a variable in your `.env` file which collides with one that already exists in your environment, then that variable will be skipped. This behavior allows you to override all `.env` configurations with a machine-specific environment, although it is not recommended.
-
-If you want to override `process.env` you can do something like this:
-
-```javascript
-const fs = require('fs')
-const dotenv = require('dotenv')
-const envConfig = dotenv.parse(fs.readFileSync('.env.override'))
-for (var k in envConfig) {
-  process.env[k] = envConfig[k]
-}
-```
-
-### Can I customize/write plugins for dotenv?
-
-For `dotenv@2.x.x`: Yes. `dotenv.config()` now returns an object representing
-the parsed `.env` file. This gives you everything you need to continue
-setting values on `process.env`. For example:
-
-```js
-var dotenv = require('dotenv')
-var variableExpansion = require('dotenv-expand')
-const myEnv = dotenv.config()
-variableExpansion(myEnv)
-```
-
-### What about variable expansion?
-
-For `dotenv@2.x.x`: Use [dotenv-expand](https://github.com/motdotla/dotenv-expand).
-
-For `dotenv@1.x.x`: We haven't been presented with a compelling use case for expanding variables and believe it leads to env vars that are not "fully orthogonal" as [The Twelve-Factor App](http://12factor.net/config) outlines.<sup>[[1](https://github.com/motdotla/dotenv/issues/39)][[2](https://github.com/motdotla/dotenv/pull/97)]</sup> Please open an issue if you have a compelling use case.
 
 ## Contributing Guide
 

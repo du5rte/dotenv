@@ -9,4 +9,16 @@ node_modules
 # Users Environment Variables
 .lock-wscript
 
+# Mac system files
+
 .DS_Store
+.DS_Store?
+._*
+.Sportlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# others
+npm-debug.log
+yarn.lock
