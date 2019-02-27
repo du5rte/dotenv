@@ -1,1 +1,1 @@
-export default from './dotenv'
+export { default } from './dotenv'
