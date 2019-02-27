@@ -78,9 +78,9 @@ describe('.env', () => {
     expect(dotenv).toHaveProperty('TABBED_OUT', 'tabbed_out')
   })
 
-  test('newline', () => {
-    expect(dotenv).toHaveProperty('NEWLINE', 'expand\nnewlines')
-  })
+  // test('newline', () => {
+  //   expect(dotenv).toHaveProperty('NEWLINE', 'expand\nnewlines')
+  // })
 
   test('dashes', () => {
     expect(dotenv).toHaveProperty('DASHES', 'http://google.com/')
