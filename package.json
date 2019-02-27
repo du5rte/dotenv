@@ -5,7 +5,7 @@
   "main": "lib/main.js",
   "scripts": {
     "build": "babel src --out-dir lib",
-    "clean": "rm -rf lib test/db && mkdir lib test/db",
+    "clean": "rm -rf lib",
     "dev": "npm run build -- --watch & npm run test -- --watch",
     "prepublish": "npm run clean && npm run build",
     "test": "jest"
