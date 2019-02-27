@@ -1,26 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-import chalk from 'chalk'
-
-const passStyle = chalk.reset.inverse.bold.green
-const failStyle = chalk.reset.inverse.bold.red
-
-function logFound(ext) {
-  console.log(`${passStyle(' FOUND ')} ${chalk.bold(ext)}`)
-}
-
-function logResult(obj) {
-  const list = Object.keys(obj)
-
-  if (list.length)  {
-    const results = list.reduce((acc, key) => `${acc}${key} `,'')
-
-    console.log(`${passStyle(' INJECTED ')} ${list.length} keys: ${chalk.dim(results)}`)
-  } else {
-    console.log(`${failStyle(' NO ')} keys loaded`)
-  }
-}
-
 
 function splitKeyValuePair(str) {
   const keyValuePairRegex = /^(\w+)\s*=\s*(.+)$/i
@@ -73,8 +52,6 @@ function searchDotEnvFile(directory) {
     const file = fs.readFileSync(fileLocation, 'utf8')
     const data = parseDotEnv(file)
 
-    logFound('.env')
-
     return data
   } catch(e) {
     return {}
@@ -88,8 +65,6 @@ function searchDotEnvJsonFile(directory) {
     const file = fs.readFileSync(fileLocation, 'utf8')
     const data = JSON.parse(file)
 
-    logFound('.env.json')
-
     return data
   } catch(e) {
     return {}
@@ -101,8 +76,6 @@ function searchDotEnvJSFile(directory) {
 
   try {
     const data = require(fileLocation)
-
-    logFound('.env.js')
 
     return data
   } catch(e) {
@@ -132,8 +105,6 @@ function searchAllEnvFiles() {
 }
 
 function StoreEnvKeysInProcessEnv(obj) {
-  logResult(obj)
-
   for (const key in obj) {
     process.env[key] = obj[key]
   }
